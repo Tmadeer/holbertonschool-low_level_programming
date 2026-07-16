@@ -20,8 +20,6 @@ int _atoi(char *s)
 	{
 		if (s[i] == '-')
 			sign *= -1;
-		else if (s[i] == '+')
-			sign *= 1;
 		else if (s[i] >= '0' && s[i] <= '9')
 		{
 			while (s[i] >= '0' && s[i] <= '9')
@@ -33,8 +31,6 @@ int _atoi(char *s)
 				result *= -1;
 			return (result);
 		}
-		else
-			sign = 1;
 		i++;
 	}
 	return (0);
