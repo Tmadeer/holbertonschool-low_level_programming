@@ -1,6 +1,5 @@
 #include "main.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 /**
  * is_digit - checks if a string contains only digits
@@ -37,16 +36,23 @@ int _strlen(char *s)
 }
 
 /**
- * errors - handles errors for main
+ * errors - prints Error and exits with status 98
  */
 void errors(void)
 {
-	printf("Error\n");
+	char *err = "Error\n";
+	int i = 0;
+
+	while (err[i])
+	{
+		_putchar(err[i]);
+		i++;
+	}
 	exit(98);
 }
 
 /**
- * multiply - performs the long multiplication
+ * multiply - performs long multiplication
  * @s1: first number string
  * @s2: second number string
  * @len1: length of s1
