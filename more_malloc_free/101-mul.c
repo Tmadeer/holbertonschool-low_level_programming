@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 
 	result = malloc(sizeof(int) * len);
 	if (!result)
-		return (1);
+		errors();
 
 	for (i = 0; i < len; i++)
 		result[i] = 0;
