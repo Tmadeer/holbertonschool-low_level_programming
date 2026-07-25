@@ -2,12 +2,28 @@
 #include <stdlib.h>
 
 /**
- * is_digit - checks if a string contains only digits
- * @s: string to evaluate
+ * _puts - prints a string followed by a new line
+ * @str: string to print
+ */
+void _puts(char *str)
+{
+	int i = 0;
+
+	while (str[i])
+	{
+		_putchar(str[i]);
+		i++;
+	}
+	_putchar('\n');
+}
+
+/**
+ * _isdigit - checks if a string contains only digits
+ * @s: string to check
  *
  * Return: 1 if all digits, 0 otherwise
  */
-int is_digit(char *s)
+int _isdigit(char *s)
 {
 	int i = 0;
 
@@ -21,47 +37,53 @@ int is_digit(char *s)
 }
 
 /**
- * _strlen - returns the length of a string
- * @s: string to evaluate
+ * _strlen - returns length of string
+ * @s: string to check
  *
- * Return: the length of the string
+ * Return: length
  */
 int _strlen(char *s)
 {
 	int i = 0;
 
-	while (s[i] != '\0')
+	while (s[i])
 		i++;
 	return (i);
 }
 
 /**
- * errors - prints Error and exits with status 98
+ * errors - handles errors and exits with status 98
  */
 void errors(void)
 {
-	char *err = "Error\n";
-	int i = 0;
-
-	while (err[i])
-	{
-		_putchar(err[i]);
-		i++;
-	}
+	_puts("Error");
 	exit(98);
 }
 
 /**
- * multiply - performs long multiplication
- * @s1: first number string
- * @s2: second number string
- * @len1: length of s1
- * @len2: length of s2
- * @res: pointer to result array
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ *
+ * Return: 0 on success
  */
-void multiply(char *s1, char *s2, int len1, int len2, int *res)
+int main(int argc, char *argv[])
 {
-	int i, j, carry, digit1, digit2;
+	char *s1, *s2;
+	int len1, len2, len, i, j, carry, digit1, digit2, a = 0, *result;
+
+	if (argc != 3 || !_isdigit(argv[1]) || !_isdigit(argv[2]))
+		errors();
+
+	s1 = argv[1];
+	s2 = argv[2];
+	len1 = _strlen(s1);
+	len2 = _strlen(s2);
+	len = len1 + len2;
+
+	result = calloc(len, sizeof(int));
+	if (!result)
+		errors();
 
 	for (i = len1 - 1; i >= 0; i--)
 	{
@@ -71,45 +93,13 @@ void multiply(char *s1, char *s2, int len1, int len2, int *res)
 		for (j = len2 - 1; j >= 0; j--)
 		{
 			digit2 = s2[j] - '0';
-			carry += res[i + j + 1] + (digit1 * digit2);
-			res[i + j + 1] = carry % 10;
+			carry += result[i + j + 1] + (digit1 * digit2);
+			result[i + j + 1] = carry % 10;
 			carry /= 10;
 		}
-
 		if (carry > 0)
-			res[i + j + 1] += carry;
+			result[i + j + 1] += carry;
 	}
-}
-
-/**
- * main - multiplies two positive numbers
- * @argc: number of arguments
- * @argv: array of arguments
- *
- * Return: always 0 (Success)
- */
-int main(int argc, char *argv[])
-{
-	char *s1, *s2;
-	int len1, len2, len, i, a = 0, *result;
-
-	if (argc != 3 || !is_digit(argv[1]) || !is_digit(argv[2]))
-		errors();
-
-	s1 = argv[1];
-	s2 = argv[2];
-	len1 = _strlen(s1);
-	len2 = _strlen(s2);
-	len = len1 + len2;
-
-	result = malloc(sizeof(int) * len);
-	if (!result)
-		errors();
-
-	for (i = 0; i < len; i++)
-		result[i] = 0;
-
-	multiply(s1, s2, len1, len2, result);
 
 	for (i = 0; i < len; i++)
 	{
@@ -118,11 +108,10 @@ int main(int argc, char *argv[])
 		if (a)
 			_putchar(result[i] + '0');
 	}
-
 	if (!a)
 		_putchar('0');
-
 	_putchar('\n');
+
 	free(result);
 	return (0);
 }
