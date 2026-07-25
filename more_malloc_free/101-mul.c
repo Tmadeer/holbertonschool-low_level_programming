@@ -2,22 +2,6 @@
 #include <stdlib.h>
 
 /**
- * _puts - prints a string followed by a new line
- * @str: string to print
- */
-void _puts(char *str)
-{
-	int i = 0;
-
-	while (str[i])
-	{
-		_putchar(str[i]);
-		i++;
-	}
-	_putchar('\n');
-}
-
-/**
  * _isdigit - checks if a string contains only digits
  * @s: string to check
  *
@@ -56,8 +40,44 @@ int _strlen(char *s)
  */
 void errors(void)
 {
-	_puts("Error");
+	char *err = "Error\n";
+	int i = 0;
+
+	while (err[i])
+	{
+		_putchar(err[i]);
+		i++;
+	}
 	exit(98);
+}
+
+/**
+ * multiply - performs long multiplication
+ * @s1: first string
+ * @s2: second string
+ * @len1: length of s1
+ * @len2: length of s2
+ * @res: result array
+ */
+void multiply(char *s1, char *s2, int len1, int len2, int *res)
+{
+	int i, j, carry, digit1, digit2;
+
+	for (i = len1 - 1; i >= 0; i--)
+	{
+		digit1 = s1[i] - '0';
+		carry = 0;
+
+		for (j = len2 - 1; j >= 0; j--)
+		{
+			digit2 = s2[j] - '0';
+			carry += res[i + j + 1] + (digit1 * digit2);
+			res[i + j + 1] = carry % 10;
+			carry /= 10;
+		}
+		if (carry > 0)
+			res[i + j + 1] += carry;
+	}
 }
 
 /**
@@ -70,7 +90,7 @@ void errors(void)
 int main(int argc, char *argv[])
 {
 	char *s1, *s2;
-	int len1, len2, len, i, j, carry, digit1, digit2, a = 0, *result;
+	int len1, len2, len, i, a = 0, *result;
 
 	if (argc != 3 || !_isdigit(argv[1]) || !_isdigit(argv[2]))
 		errors();
@@ -85,21 +105,7 @@ int main(int argc, char *argv[])
 	if (!result)
 		errors();
 
-	for (i = len1 - 1; i >= 0; i--)
-	{
-		digit1 = s1[i] - '0';
-		carry = 0;
-
-		for (j = len2 - 1; j >= 0; j--)
-		{
-			digit2 = s2[j] - '0';
-			carry += result[i + j + 1] + (digit1 * digit2);
-			result[i + j + 1] = carry % 10;
-			carry /= 10;
-		}
-		if (carry > 0)
-			result[i + j + 1] += carry;
-	}
+	multiply(s1, s2, len1, len2, result);
 
 	for (i = 0; i < len; i++)
 	{
@@ -115,4 +121,5 @@ int main(int argc, char *argv[])
 	free(result);
 	return (0);
 }
+
 
