@@ -1,6 +1,63 @@
 #include "hash_tables.h"
 
 /**
+ * update_value - Updates the value of an existing key
+ * @node: The node to update
+ * @value: The new value
+ *
+ * Return: 1 if it succeeded, 0 otherwise
+ */
+int update_value(hash_node_t *node, const char *value)
+{
+	char *value_copy;
+
+	value_copy = malloc(strlen(value) + 1);
+	if (value_copy == NULL)
+		return (0);
+	strcpy(value_copy, value);
+
+	free(node->value);
+	node->value = value_copy;
+	return (1);
+}
+
+/**
+ * create_node - Creates a new hash node
+ * @key: The key
+ * @value: The value
+ *
+ * Return: A pointer to the new node, or NULL on failure
+ */
+hash_node_t *create_node(const char *key, const char *value)
+{
+	hash_node_t *new_node;
+
+	new_node = malloc(sizeof(hash_node_t));
+	if (new_node == NULL)
+		return (NULL);
+
+	new_node->key = malloc(strlen(key) + 1);
+	if (new_node->key == NULL)
+	{
+		free(new_node);
+		return (NULL);
+	}
+	strcpy(new_node->key, key);
+
+	new_node->value = malloc(strlen(value) + 1);
+	if (new_node->value == NULL)
+	{
+		free(new_node->key);
+		free(new_node);
+		return (NULL);
+	}
+	strcpy(new_node->value, value);
+
+	new_node->next = NULL;
+	return (new_node);
+}
+
+/**
  * hash_table_set - Adds an element to the hash table
  * @ht: The hash table you want to add or update the key/value to
  * @key: The key. Cannot be an empty string
@@ -12,15 +69,9 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 {
 	unsigned long int index;
 	hash_node_t *new_node, *tmp;
-	char *value_copy;
 
 	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
 		return (0);
-
-	value_copy = malloc(strlen(value) + 1);
-	if (value_copy == NULL)
-		return (0);
-	strcpy(value_copy, value);
 
 	index = key_index((const unsigned char *)key, ht->size);
 	tmp = ht->array[index];
@@ -28,31 +79,14 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 	while (tmp != NULL)
 	{
 		if (strcmp(tmp->key, key) == 0)
-		{
-			free(tmp->value);
-			tmp->value = value_copy;
-			return (1);
-		}
+			return (update_value(tmp, value));
 		tmp = tmp->next;
 	}
 
-	new_node = malloc(sizeof(hash_node_t));
+	new_node = create_node(key, value);
 	if (new_node == NULL)
-	{
-		free(value_copy);
 		return (0);
-	}
 
-	new_node->key = malloc(strlen(key) + 1);
-	if (new_node->key == NULL)
-	{
-		free(value_copy);
-		free(new_node);
-		return (0);
-	}
-	strcpy(new_node->key, key);
-
-	new_node->value = value_copy;
 	new_node->next = ht->array[index];
 	ht->array[index] = new_node;
 
